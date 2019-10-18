@@ -20,11 +20,12 @@ DWORD WINAPI OnDllAttach(PVOID base)
 
 	g_api = Capi::Capi();
 
-    while (g_Settings.bCheatActive)
-    {
-        using namespace std::literals::chrono_literals;
-        std::this_thread::sleep_for(1s);
-    }
+	while (true)//g_api.bRunning)//tu peux le gerer avec une commande
+	{
+		using namespace std::literals::chrono_literals;
+		std::this_thread::sleep_for(1s);
+	}
+
     FreeLibraryAndExitThread(static_cast<HMODULE>(base), 1);
 }
 

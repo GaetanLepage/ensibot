@@ -3,6 +3,7 @@
 #include <iostream>
 #include <windows.h>
 #include <cmath>
+#include <thread>
 #include "../Utils/Interfaces.h"
 #include "../SDK/IClientMode.h"
 #include "../SDK/CInput.h"
@@ -62,11 +63,18 @@ private:
 public:
 	Capi(void);
 
-	~Capi() {}
+	~Capi();
 
-	void createConsole();
+
+	// SOCKET UTILITIES
 
 	void createServer();
+
+	SOCKET get_client_socket();
+
+	void handleMessage(string message);
+
+	// REWARD
 
 	void computeReward(CUserCmd* pCmd);
 

@@ -95,7 +95,15 @@ bool __fastcall Hooks::CreateMove(IClientMode* thisptr, void* edx, float sample_
     g_Misc.OnCreateMove();
     // run shit outside enginepred
 
-	g_api.computeReward(pCmd); // TODO
+	g_api.computeReward(pCmd);
+
+	static char buffer[1024];//(ou pas static ?)
+	if (recv(g_api.get_client_socket(), buffer, sizeof(buffer), 0) != WSAEWOULDBLOCK)//10035
+	{
+		g_api.handleMessage(string(buffer));
+		// Clearing buffer
+		memset(buffer, 0, sizeof(buffer));
+	}
 
     //engine_prediction::RunEnginePred();
     // run shit in enginepred

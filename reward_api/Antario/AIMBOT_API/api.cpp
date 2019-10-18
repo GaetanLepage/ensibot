@@ -4,26 +4,23 @@
 
 #include "api.h"
 
+using namespace std::literals::chrono_literals;
 
 // This is the constructor of a class that has been exported.
 Capi::Capi()
 {
-	createConsole();
-	printf("console created\n");
-	createServer();
+	//createServer();
 	printf("server created\n");
 }
 
-void Capi::createConsole()
+Capi::~Capi()
 {
-	AllocConsole();
-	freopen_s((FILE * *)stdout, "CONOUT$", "wb", stdout);
-	freopen_s((FILE * *)stderr, "CONOUT$", "wb", stderr);
-	freopen_s((FILE * *)stdin, "CONIN$", "rb", stdin);
-	SetConsoleTitle(L"Debug");
+	closesocket(client_socket);
+	cout << "Client disconnected." << endl;
 }
 
 void Capi::createServer() {
+
 	WSADATA WSAData;
 
 	SOCKADDR_IN serverAddr, clientAddr;
@@ -33,7 +30,7 @@ void Capi::createServer() {
 
 	serverAddr.sin_addr.s_addr = INADDR_ANY;
 	serverAddr.sin_family = AF_INET;
-	serverAddr.sin_port = htons(5555);
+	serverAddr.sin_port = htons(3121);
 
 	bind(server_socket, (SOCKADDR*)& serverAddr, sizeof(serverAddr));
 	listen(server_socket, 0);
@@ -46,39 +43,31 @@ void Capi::createServer() {
 	if ((client_socket = accept(server_socket, (SOCKADDR*)& clientAddr, &clientAddrSize)) != INVALID_SOCKET)
 	{
 		cout << "Client connected!" << endl;
-
-		while (true) {
-			recv(client_socket, buffer, sizeof(buffer), 0);
-
-
-			// Convert message from char[] to string
-			message = string(buffer);
-
-			// Clearing buffer
-			memset(buffer, 0, sizeof(buffer));
-
-			if (message == "get_reward") {
-				sendReward();
-			}
-
-			if (message == "kill_bots") {
-				// TODO send command "kill bots"
-				cout << "Killing bots" << endl;
-			}
-			else {
-				cout << "Unknown message : " << message << endl;
-			}
-
-		}
-
-		closesocket(client_socket);
-		cout << "Client disconnected." << endl;
 	}
+}
+
+void Capi::handleMessage(string message) {
+	if (message == "get_reward") {
+		sendReward();
+	}
+
+	if (message == "kill_bots") {
+		// TODO send command "kill bots"
+		cout << "Killing bots" << endl;
+	}
+	else {
+		cout << "Unknown message : " << message << endl;
+	}
+}
+
+SOCKET Capi::get_client_socket()
+{
+	return client_socket;
 }
 
 void Capi::computeReward(CUserCmd* pCmd) {
 	
-	this->p_cmd = pCmd;
+	p_cmd = pCmd;
 
 	// Updating player info
 	my_index = g_pEngine->GetLocalPlayer();
@@ -93,7 +82,7 @@ void Capi::computeReward(CUserCmd* pCmd) {
 	if (!computeIfHit()) // if an ennemy player is being aimed at
 		computeClosest(); // if no ennemy player is being aimed at
 
-	cout << this->reward << endl;
+	cout << reward << endl;
 }
 
 bool Capi::computeIfHit() {
@@ -118,10 +107,10 @@ bool Capi::computeIfHit() {
 
 	switch (trace.hitbox) {
 	case bones_ids::head:
-		this->reward = 1.f;
+		reward = 1.f;
 		break;
 	default:
-		this->reward = 0.5;
+		reward = 0.5;
 	}
 	return true;
 }
@@ -150,7 +139,7 @@ void Capi::computeClosest() {
 
 		Vector vec_projection = vec_aim_direction * (vec_me_to_ennemy.Dot(vec_aim_direction)); // OP
 
-		dist_to_ennemy = vec_me_to_ennemy.DistTo(vec_projection);
+		dist_to_ennemy = vec_me_to_ennemy.DistTo(vec_projection); // ||OP - OE||
 
 		if (dist_to_ennemy < min_dist) {
 			min_dist = dist_to_ennemy;
@@ -158,7 +147,7 @@ void Capi::computeClosest() {
 	}
 
 	// Computing reward
-	this->reward = 0.5 * exp(- min_dist);
+	reward = 0.5 * exp(- min_dist);
 }
 
 bool Capi::is_ennemy_valid(C_BaseEntity* ennemy_entity) {
