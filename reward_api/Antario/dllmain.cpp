@@ -7,18 +7,9 @@
 
 DWORD WINAPI OnDllAttach(PVOID base)
 {
-#ifdef _DEBUG       // Create console only in debug mode
-    AllocConsole();                                 // Alloc memory and create console    
-    freopen_s((FILE**)stdin,  "CONIN$", "r",  stdin);   // ----------------------------------------------
-    freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);  //  Make iostream library use our console handle
-                                                        // ----------------------------------------------
-    SetConsoleTitleA(" Antario - Debug console");   // Set console name to a custom one
-#endif
-    
-    Utils::Log("Console Allocated!");
     Hooks::Init();
 
-	g_api = Capi::Capi();
+	g_api.init();
 
 	while (true)//g_api.bRunning)//tu peux le gerer avec une commande
 	{

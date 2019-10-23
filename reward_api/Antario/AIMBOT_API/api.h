@@ -22,7 +22,7 @@ private:
 	SOCKET server_socket, client_socket;
 	
 	// Reward computation
-	double reward;
+	float reward;
 
 	enum bones_ids {
 		head = 0,
@@ -61,12 +61,19 @@ private:
 	Vector vec_aim_direction;
 
 public:
+
 	Capi(void);
 
-	~Capi();
+	void init();
+
+	~Capi() {}
 
 
 	// SOCKET UTILITIES
+
+	bool is_client_connected;
+
+	void createConsole();
 
 	void createServer();
 

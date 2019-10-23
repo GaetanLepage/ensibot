@@ -9,14 +9,29 @@ using namespace std::literals::chrono_literals;
 // This is the constructor of a class that has been exported.
 Capi::Capi()
 {
-	//createServer();
-	printf("server created\n");
+	createConsole();
+	printf("console created\n");
+	reward = 0.f;
+	is_client_connected = false;
 }
 
-Capi::~Capi()
+void Capi::init() {
+	createServer();
+}
+
+//Capi::~Capi()
+//{
+//	closesocket(client_socket);
+//	cout << "Client disconnected." << endl;
+//}
+
+void Capi::createConsole()
 {
-	closesocket(client_socket);
-	cout << "Client disconnected." << endl;
+	AllocConsole();
+	freopen_s((FILE**)stdout, "CONOUT$", "wb", stdout);
+	freopen_s((FILE**)stderr, "CONOUT$", "wb", stderr);
+	freopen_s((FILE**)stdin, "CONIN$", "rb", stdin);
+	SetConsoleTitle(L"Debug");
 }
 
 void Capi::createServer() {
@@ -42,21 +57,34 @@ void Capi::createServer() {
 	int clientAddrSize = sizeof(clientAddr);
 	if ((client_socket = accept(server_socket, (SOCKADDR*)& clientAddr, &clientAddrSize)) != INVALID_SOCKET)
 	{
+		u_long iMode = 1;
+		ioctlsocket(client_socket, FIONBIO, &iMode);
 		cout << "Client connected!" << endl;
+		is_client_connected = true;
 	}
 }
 
 void Capi::handleMessage(string message) {
-	if (message == "get_reward") {
+	if (message.length() == 0) {
+		cout << "Message is none" << endl;
+	}
+
+	else if (message == "close") {
 		sendReward();
 	}
 
-	if (message == "kill_bots") {
+	else if (message == "get_reward") {
+		sendReward();
+	}
+
+	else if (message == "kill_bots") {
 		// TODO send command "kill bots"
 		cout << "Killing bots" << endl;
 	}
 	else {
-		cout << "Unknown message : " << message << endl;
+		cout << "Unknown message : " << endl;
+		cout << "\tLength =  " << message.length() << endl;
+		cout << "\tpayload =  " << message << endl;
 	}
 }
 
@@ -82,7 +110,7 @@ void Capi::computeReward(CUserCmd* pCmd) {
 	if (!computeIfHit()) // if an ennemy player is being aimed at
 		computeClosest(); // if no ennemy player is being aimed at
 
-	cout << reward << endl;
+	// cout << reward << endl;
 }
 
 bool Capi::computeIfHit() {
@@ -147,7 +175,8 @@ void Capi::computeClosest() {
 	}
 
 	// Computing reward
-	reward = 0.5 * exp(- min_dist);
+	//reward = 0.5 * exp(- min_dist);
+	reward = 0.5 -min_dist;
 }
 
 bool Capi::is_ennemy_valid(C_BaseEntity* ennemy_entity) {
@@ -178,11 +207,11 @@ bool Capi::is_ennemy_valid(C_BaseEntity* ennemy_entity) {
 
 void Capi::sendReward() {
 
-	uint8_t reward_bytes[sizeof(float)];
+	//cout << "sending reward to client" << endl;
 
-	*(char*)(reward_bytes) = reward;
+	cout << "reward = " << reward << endl;
 
-	send(client_socket, (const char *) reward_bytes, sizeof(float), 0);
+	send(client_socket, (const char *) &reward, sizeof reward, 0);
 
-	cout << "reward sent to client" << endl;
+	//cout << "reward sent to client" << endl;
 }
