@@ -9,3 +9,4 @@ PyQt5
 QtGui
 PyQt5-stubs
 pynput
+pylint
