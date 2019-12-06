@@ -7,11 +7,12 @@ TODO doc
 
 import os
 import pyautogui
+# from pynput.mouse import Button, Controller
 
 # Loggers
 import logging.handlers
 
-PYTHON_LOGGER = logging.getLogger("SocketClient")
+PYTHON_LOGGER = logging.getLogger("IoApi")
 if not os.path.exists("log"):
     os.mkdir("log")
 HDLR = logging.handlers.TimedRotatingFileHandler(
@@ -27,12 +28,14 @@ PYTHON_LOGGER.addHandler(HDLR)
 PYTHON_LOGGER.addHandler(STREAM_HANDLER)
 PYTHON_LOGGER.setLevel(logging.DEBUG)
 
-class IoApi():
+
+class IoApi:
     """
     TODO doc
     """
 
     def __init__(self):
+        # self.mouse = Controller()
         pass
 
     def get_frame(self):

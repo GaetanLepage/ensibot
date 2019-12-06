@@ -12,7 +12,7 @@ import pyqtgraph as pg
 import multiprocessing
 from multiprocessing import Process, Queue
 
-from ui.ensibot_ui_process import EnsibotUiProcess
+from ensibot_model.ui.ensibot_ui_process import EnsibotUiProcess
 
 
 # Loggers

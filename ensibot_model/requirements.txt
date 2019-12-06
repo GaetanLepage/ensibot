@@ -1,0 +1,11 @@
+tensorflow
+mss
+numpy
+opencv-python
+Pillow
+PyAutoGui
+PyQtGraph
+PyQt5
+QtGui
+PyQt5-stubs
+pynput
