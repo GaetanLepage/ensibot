@@ -25,6 +25,7 @@ PYTHON_LOGGER.addHandler(HDLR)
 PYTHON_LOGGER.addHandler(STREAM_HANDLER)
 PYTHON_LOGGER.setLevel(logging.DEBUG)
 
+
 class SocketClient(threading.Thread):
     """
     Assure the connection to the CSGO reward API thanks to a socket.
@@ -41,10 +42,9 @@ class SocketClient(threading.Thread):
         self.socket = None
         self.is_connected = False
 
-
     def connect_to_server(self):
         self.socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
-        #self.socket.setblocking(False)
+        # self.socket.setblocking(False)
         self.socket.connect((self.server_ip, self.server_port))
         self.is_connected = True
     

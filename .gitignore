@@ -89,6 +89,8 @@ venv/
 ENV/
 env.bak/
 venv.bak/
+linux_venv/
+windows_venv/
 
 # VScode
 .vscode/

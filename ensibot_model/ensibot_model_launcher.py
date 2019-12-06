@@ -10,7 +10,7 @@ import argparse
 import logging.handlers
 import os
 
-from ui.ensibot_ui_interface import EnsibotUiInterface
+# from ui.ensibot_ui_interface import EnsibotUiInterface
 from ensibot import Ensibot
 
 PYTHON_LOGGER = logging.getLogger("EngineInterfaceExe")
@@ -50,7 +50,7 @@ if __name__ == "__main__":
         if args.training_mode:
             pass
         elif args.testing_mode:
-            pass
+            ensibot.run()
 
         pass
     except Exception as e:

@@ -1,6 +1,0 @@
-tensorflow
-mss
-numpy
-opencv-python
-Pillow
-

@@ -6,11 +6,13 @@
 """
 
 import os
+import time
+import random as rd
 
 # TODO remove when io_api will be an external software
 from io_api.io_api import IoApi
 
-from ui.ensibot_ui_interface import EnsibotUiInterface
+# from ui.ensibot_ui_interface import EnsibotUiInterface
 
 
 # Loggers
@@ -33,6 +35,30 @@ class Ensibot():
     """
 
     def __init__(self, enable_ui):
+
+        self.screen_res_width = 1024
+        self.screen_res_height = 768
+
+        self.io_api = IoApi()
         
         if enable_ui:
-            self.ui = EnsibotUiInterface()
+            # self.ui = EnsibotUiInterface()
+            pass
+
+    def run(self):
+        """
+        Runs the model in testing mode (no learning)
+        """
+        while True:
+            # Get Image
+            # TODO
+
+            # Compute X,Y
+            x, y = rd.randint(0, self.screen_res_width), rd.randint(0, self.screen_res_height)
+
+            # Send X,Y to IO API
+            self.io_api.send_mouse_event(
+                coord_x=x,
+                coord_y=y)
+            
+            time.sleep(2)
