@@ -32,6 +32,7 @@ PYTHON_LOGGER.setLevel(logging.DEBUG)
 
 class Ensibot():
     """
+    Implementation of the decision engine
     """
 
     def __init__(self, enable_ui):
@@ -40,7 +41,7 @@ class Ensibot():
         self.screen_res_height = 768
 
         self.io_api = IoApi()
-        
+
         if enable_ui:
             # self.ui = EnsibotUiInterface()
             pass
@@ -60,5 +61,5 @@ class Ensibot():
             self.io_api.send_mouse_event(
                 coord_x=x,
                 coord_y=y)
-            
+
             time.sleep(2)
